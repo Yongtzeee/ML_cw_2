@@ -95,11 +95,13 @@ if ~isempty(tree.kids)
     end
     line(tree.X, tree.Y, 'marker', '^', 'markersize', 8)
     opText = tree.op;
-%     text(tree.X, tree.Y, ['  ' opText], 'HorizontalAlignment', 'left', 'interpreter', 'none')
-    text(tree.X, tree.Y,num2str(opText),'HorizontalAlignment', 'right', 'VerticalAlignment', 'bottom','interpreter', 'none');
+    threshold = tree.threshold;
+    text(tree.X, tree.Y, ['  ' opText], 'HorizontalAlignment', 'left', 'interpreter', 'none')
+    text(tree.X, tree.Y,num2str(threshold),'HorizontalAlignment', 'right', 'VerticalAlignment', 'bottom','interpreter', 'none');
 else
-    opText = tree.op;
+%     opText = tree.op;
+    pred = tree.prediction;
     line(tree.X, tree.Y, 'marker', '.', 'markersize', 8)
 %     text(tree.X, tree.Y, opText, 'HorizontalAlignment', 'center', 'VerticalAlignment', 'top', 'interpreter', 'none')
-    text(tree.X, tree.Y, num2str(tree.class) ,'HorizontalAlignment', 'right', 'VerticalAlignment', 'top', 'interpreter', 'none');
+    text(tree.X, tree.Y, num2str(pred) ,'HorizontalAlignment', 'right', 'VerticalAlignment', 'top', 'interpreter', 'none');
 end

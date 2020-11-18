@@ -1,7 +1,7 @@
 function DecisionTree(taskType)
 
 % load the dataset
-data = readtable('online_shoppers_intention.csv');
+data = readtable('../online_shoppers_intention.csv');
 
 % take same number of true and false labels from original dataset
 dataTrue = data(strcmp(data.Revenue, 'TRUE'), :);
@@ -86,11 +86,10 @@ labelsTest = labels(floor(size(features, 1)/5*4)+1:size(labels, 1), :);
 decisionTree = learnTask(taskType, featuresTrain, labelsTrain);
 
 % display decision tree
-% DrawDecisionTree(decisionTree, "Decision Tree structure for classification");
+DrawDecisionTree(decisionTree, "Decision Tree structure for classification");
 
 % conduct 10-fold cross-validation
 folds = 10;
-decisionTrees = {};
 for fold = 1:folds
     
     % split dataset into training and testing datasets in each fold
@@ -103,12 +102,10 @@ for fold = 1:folds
     labelsFoldTrain2 = labels(fold*(floor(size(features,1)/10))+1:size(labels,1), :);
     labelsFoldTrain = [labelsFoldTrain1; labelsFoldTrain2];
     
-    decisionTrees = [decisionTrees, learnTask(taskType, featuresFoldTrain, labelsFoldTrain)];
-end
-
-% display decision tree structures of each fold
-for i = 1:folds
-    DrawDecisionTree(decisionTrees(i), "Decision Tree - Fold " + i);
+    decTree = learnTask(taskType, featuresFoldTrain, labelsFoldTrain);
+    
+    % display decision tree structures of each fold
+    DrawDecisionTree(decTree, "Decision Tree - Fold " + fold);
 end
 
 % test decision tree
