@@ -69,6 +69,5 @@ if maxGains <= 0
     bestThreshold = -Inf;
     bestAttribute = -1;
 end
-
 end
 

@@ -43,4 +43,3 @@ rightChild = decisionTreeLearning(featuresRight, labelsRight);
 tree.kids = {leftChild, rightChild};
 decisionTree = tree;
 end
-
