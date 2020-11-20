@@ -82,11 +82,18 @@ featuresTest = features(floor(size(features, 1)/5*4)+1:size(features, 1), :);
 labelsTrain = labels(1:floor(size(features, 1)/5*4), :);
 labelsTest = labels(floor(size(features, 1)/5*4)+1:size(labels, 1), :);
 
-% switch between classification or regression task
+% switch between classification or regression task (?)
 decisionTree = learnTask(taskType, featuresTrain, labelsTrain);
+
+% test decision tree
+accuracy = evaluateTree(decisionTree, featuresTest, labelsTest);
+disp("Accuracy: " + (accuracy*100));
 
 % display decision tree
 DrawDecisionTree(decisionTree, "Decision Tree structure for classification");
+
+% conduct pruning
+
 
 % conduct 10-fold cross-validation
 folds = 10;
@@ -104,12 +111,48 @@ for fold = 1:folds
     
     decTree = learnTask(taskType, featuresFoldTrain, labelsFoldTrain);
     
+    % prune tree
+    
+    
+    % evaluate tree
+    accuracy = evaluateTree(decTree, featuresFoldTest, labelsFoldTest);
+    disp("Accuracy at Fold " + fold + ": " + (accuracy*100));
+    
     % display decision tree structures of each fold
     DrawDecisionTree(decTree, "Decision Tree - Fold " + fold);
 end
 
-% test decision tree
+end
 
+
+% evaluate and calculate the accuracy of the decision tree
+function accuracy = evaluateTree(tree, features, labels)
+
+labs = table2array(labels);
+totalCorrect = 0;
+for i = 1:height(features)
+    pred = goDownTree(tree, features(i, :));
+    totalCorrect = totalCorrect + (pred == labs(i));
+end
+
+accuracy = totalCorrect / height(features);
+
+end
+
+
+% recursively traverse the decision tree to retrieve the predicted class
+function prediction = goDownTree(tree, feature)
+
+if isempty(tree.kids)
+    prediction = tree.prediction;
+    return
+end
+
+if table2array(feature(1, tree.attribute)) < tree.threshold
+    prediction = goDownTree(tree.kids{1}, feature);
+else
+    prediction = goDownTree(tree.kids{2}, feature);
+end
 
 end
 

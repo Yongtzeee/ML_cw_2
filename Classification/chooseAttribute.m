@@ -35,7 +35,7 @@ for i = 1:length(columns)
         PNegative = numNegative / (numPositive + numNegative);
         I = max(0, (-(PPositive)*log2(PPositive))) + max(0, (-(PNegative)*log2(PNegative)));
         
-        remainder = (numPositive + numNegative) / height(features) * I;
+        remainder = remainder + (numPositive + numNegative) / height(features) * I;
         
         % >= threshold
         numPositive = sum((col >= thresholds(j)) & (lab == 1));
@@ -59,10 +59,10 @@ for i = 1:length(columns)
         [maxGains, bestThresholdInd] = max(gainsPerAttr);
         bestThreshold = thresholds(bestThresholdInd);
         bestAttribute = i;
-        disp("bestAttribute: " + bestAttribute);
-        disp("bestThreshold: " + bestThreshold);
+%         disp("bestAttribute: " + bestAttribute);
+%         disp("bestThreshold: " + bestThreshold);
     end
-    disp("maxGains: " + maxGains);
+%     disp("maxGains: " + maxGains);
 end
 
 if maxGains <= 0

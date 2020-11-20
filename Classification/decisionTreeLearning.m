@@ -21,8 +21,7 @@ else
     % if bestAttribute = -1 then choose majority value of labels as leaf node
     % else do below
     if bestAttribute == -1
-        [~, ind] = max([sum(table2array(labels) == 0), sum(table2array(labels) == 1)]);
-        tree.prediction = ind - 1;
+        tree.prediction = majorityValue(labels);
         decisionTree = tree;
     else
         % is not leaf node
