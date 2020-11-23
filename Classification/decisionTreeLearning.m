@@ -1,7 +1,4 @@
 function decisionTree = decisionTreeLearning(features, labels)
-% inputs:
-%   features - set of N x d training examples
-%   labels - set of N x 1 target labels
 
 % initialize the tree struct at current node
 tree.op = "";

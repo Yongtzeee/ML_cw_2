@@ -29,18 +29,6 @@ Categorization of Month column:
     2 - more than 1000, no special day
     3 - less than 1000, no special day
 %}
-% features.Month(strcmp(features.Month, "Jan")) = {"3"};
-% features.Month(strcmp(features.Month, "Feb")) = {"1"};
-% features.Month(strcmp(features.Month, "Mar")) = {"2"};
-% features.Month(strcmp(features.Month, "Apr")) = {"3"};
-% features.Month(strcmp(features.Month, "May")) = {"0"};
-% features.Month(strcmp(features.Month, "June")) = {"3"};
-% features.Month(strcmp(features.Month, "Jul")) = {"3"};
-% features.Month(strcmp(features.Month, "Aug")) = {"3"};
-% features.Month(strcmp(features.Month, "Sep")) = {"3"};
-% features.Month(strcmp(features.Month, "Oct")) = {"3"};
-% features.Month(strcmp(features.Month, "Nov")) = {"2"};
-% features.Month(strcmp(features.Month, "Dec")) = {"2"};
 featuresMonths = zeros(height(features), 1);
 for i = 1:height(features)
     switch cell2mat(features.Month(i, 1))
@@ -82,8 +70,8 @@ featuresTest = features(floor(size(features, 1)/5*4)+1:size(features, 1), :);
 labelsTrain = labels(1:floor(size(features, 1)/5*4), :);
 labelsTest = labels(floor(size(features, 1)/5*4)+1:size(labels, 1), :);
 
-% switch between classification or regression task (?)
-decisionTree = learnTask(taskType, featuresTrain, labelsTrain);
+% build the decision tree
+decisionTree = decisionTreeLearning(featuresTrain, labelsTrain);
 
 % test decision tree
 accuracy = evaluateTree(decisionTree, featuresTest, labelsTest);
@@ -92,8 +80,7 @@ disp("Accuracy: " + (accuracy*100));
 % display decision tree
 DrawDecisionTree(decisionTree, "Decision Tree structure for classification");
 
-% conduct pruning
-
+%% - pruning can be conducted here to improve generalization
 
 % conduct 10-fold cross-validation
 folds = 10;
@@ -109,10 +96,9 @@ for fold = 1:folds
     labelsFoldTrain2 = labels(fold*(floor(size(features,1)/10))+1:size(labels,1), :);
     labelsFoldTrain = [labelsFoldTrain1; labelsFoldTrain2];
     
-    decTree = learnTask(taskType, featuresFoldTrain, labelsFoldTrain);
+    decTree = decisionTreeLearning(featuresFoldTrain, labelsFoldTrain);
     
-    % prune tree
-    
+    %% - pruning can be conducted here to improve generalization
     
     % evaluate tree
     accuracy = evaluateTree(decTree, featuresFoldTest, labelsFoldTest);
@@ -155,18 +141,4 @@ else
 end
 
 end
-
-
-% unfinished
-function decisionTree = learnTask(taskType, features, labels)
-
-taskType = lower(taskType);
-if strcmp(taskType, "classification")
-    decisionTree = decisionTreeLearning(features, labels);
-elseif strcmp(taskType, "regression")
-    decisionTree = decisionTreeLearning(features, labels);
-end
-
-end
-
 
