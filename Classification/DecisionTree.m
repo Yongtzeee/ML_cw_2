@@ -1,7 +1,7 @@
 function DecisionTree(taskType)
 
 % load the dataset
-data = readtable('online_shoppers_intention.csv');
+data = readtable('../online_shoppers_intention.csv');
 
 % take same number of true and false labels from original dataset
 dataTrue = data(strcmp(data.Revenue, 'TRUE'), :);
@@ -29,18 +29,6 @@ Categorization of Month column:
     2 - more than 1000, no special day
     3 - less than 1000, no special day
 %}
-% features.Month(strcmp(features.Month, "Jan")) = {"3"};
-% features.Month(strcmp(features.Month, "Feb")) = {"1"};
-% features.Month(strcmp(features.Month, "Mar")) = {"2"};
-% features.Month(strcmp(features.Month, "Apr")) = {"3"};
-% features.Month(strcmp(features.Month, "May")) = {"0"};
-% features.Month(strcmp(features.Month, "June")) = {"3"};
-% features.Month(strcmp(features.Month, "Jul")) = {"3"};
-% features.Month(strcmp(features.Month, "Aug")) = {"3"};
-% features.Month(strcmp(features.Month, "Sep")) = {"3"};
-% features.Month(strcmp(features.Month, "Oct")) = {"3"};
-% features.Month(strcmp(features.Month, "Nov")) = {"2"};
-% features.Month(strcmp(features.Month, "Dec")) = {"2"};
 featuresMonths = zeros(height(features), 1);
 for i = 1:height(features)
     switch cell2mat(features.Month(i, 1))
@@ -82,15 +70,20 @@ featuresTest = features(floor(size(features, 1)/5*4)+1:size(features, 1), :);
 labelsTrain = labels(1:floor(size(features, 1)/5*4), :);
 labelsTest = labels(floor(size(features, 1)/5*4)+1:size(labels, 1), :);
 
-% switch between classification or regression task
-decisionTree = learnTask(taskType, featuresTrain, labelsTrain);
+% build the decision tree
+decisionTree = decisionTreeLearning(featuresTrain, labelsTrain);
+
+% test decision tree
+accuracy = evaluateTree(decisionTree, featuresTest, labelsTest);
+disp("Accuracy: " + (accuracy*100));
 
 % display decision tree
-% DrawDecisionTree(decisionTree, "Decision Tree structure for classification");
+DrawDecisionTree(decisionTree, "Decision Tree structure for classification");
+
+% - pruning can be conducted here to improve generalization
 
 % conduct 10-fold cross-validation
 folds = 10;
-decisionTrees = {};
 for fold = 1:folds
     
     % split dataset into training and testing datasets in each fold
@@ -103,28 +96,48 @@ for fold = 1:folds
     labelsFoldTrain2 = labels(fold*(floor(size(features,1)/10))+1:size(labels,1), :);
     labelsFoldTrain = [labelsFoldTrain1; labelsFoldTrain2];
     
-    decisionTrees = [decisionTrees, learnTask(taskType, featuresFoldTrain, labelsFoldTrain)];
+    decTree = decisionTreeLearning(featuresFoldTrain, labelsFoldTrain);
+    
+    % -- pruning can be conducted here to improve generalization
+    
+    % evaluate tree
+    accuracy = evaluateTree(decTree, featuresFoldTest, labelsFoldTest);
+    disp("Accuracy at Fold " + fold + ": " + (accuracy*100));
+    
+    % display decision tree structures of each fold
+    DrawDecisionTree(decTree, "Decision Tree - Fold " + fold);
 end
 
-% display decision tree structures of each fold
-for i = 1:folds
-    DrawDecisionTree(decisionTrees(i), "Decision Tree - Fold " + i);
-end
-
-% test decision tree
-
-
 end
 
 
-% unfinished
-function decisionTree = learnTask(taskType, features, labels)
+% evaluate and calculate the accuracy of the decision tree
+function accuracy = evaluateTree(tree, features, labels)
 
-taskType = lower(taskType);
-if strcmp(taskType, "classification")
-    decisionTree = decisionTreeLearning(features, labels);
-elseif strcmp(taskType, "regression")
-    decisionTree = decisionTreeLearning(features, labels);
+labs = table2array(labels);
+totalCorrect = 0;
+for i = 1:height(features)
+    pred = goDownTree(tree, features(i, :));
+    totalCorrect = totalCorrect + (pred == labs(i));
+end
+
+accuracy = totalCorrect / height(features);
+
+end
+
+
+% recursively traverse the decision tree to retrieve the predicted class
+function prediction = goDownTree(tree, feature)
+
+if isempty(tree.kids)
+    prediction = tree.prediction;
+    return
+end
+
+if table2array(feature(1, tree.attribute)) < tree.threshold
+    prediction = goDownTree(tree.kids{1}, feature);
+else
+    prediction = goDownTree(tree.kids{2}, feature);
 end
 
 end

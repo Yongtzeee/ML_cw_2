@@ -7,9 +7,7 @@ columns = features.Properties.VariableNames();
 rangedCols = ["Administrative_Duration" "Informational_Duration" "ProductRelated_Duration" "BounceRates" "ExitRates" "PageValues" "SpecialDay"];
 maxGains = 0;
 for i = 1:length(columns)
-    % calculate remainder
     col = table2array(features(:, columns(i)));
-%     disp(columns(i));
     values = unique(col);
 
     if ismember(columns(i), rangedCols)
@@ -35,7 +33,7 @@ for i = 1:length(columns)
         PNegative = numNegative / (numPositive + numNegative);
         I = max(0, (-(PPositive)*log2(PPositive))) + max(0, (-(PNegative)*log2(PNegative)));
         
-        remainder = (numPositive + numNegative) / height(features) * I;
+        remainder = remainder + (numPositive + numNegative) / height(features) * I;
         
         % >= threshold
         numPositive = sum((col >= thresholds(j)) & (lab == 1));
@@ -44,6 +42,7 @@ for i = 1:length(columns)
         PNegative = numNegative / (numPositive + numNegative);
         I = max(0, (-(PPositive)*log2(PPositive))) + max(0, (-(PNegative)*log2(PNegative)));
         
+		% calculate the remainder
         remainder = remainder + ((numPositive + numNegative) / height(features) * I);
         
         % calculate gain
@@ -55,19 +54,18 @@ for i = 1:length(columns)
         gainsPerAttr = [gainsPerAttr, gain];
     end
     
+	% get highest information gain
     if max(gainsPerAttr) > maxGains
         [maxGains, bestThresholdInd] = max(gainsPerAttr);
         bestThreshold = thresholds(bestThresholdInd);
         bestAttribute = i;
-        disp("bestAttribute: " + bestAttribute);
-        disp("bestThreshold: " + bestThreshold);
     end
-    disp("maxGains: " + maxGains);
 end
 
 if maxGains <= 0
     bestThreshold = -Inf;
     bestAttribute = -1;
 end
+
 end
 
