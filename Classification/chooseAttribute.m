@@ -4,7 +4,7 @@ function [bestAttribute, bestThreshold] = chooseAttribute(features, labels)
 lab = table2array(labels);
 columns = features.Properties.VariableNames();
 
-rangedCols = ["Administrative_Duration" "Informational_Duration" "ProductRelated_Duration" "BounceRates" "ExitRates" "PageValues" "SpecialDay"];
+rangedCols = ["BounceR" "ExitR" "PageV" "SpecD"];
 maxGains = 0;
 for i = 1:length(columns)
     col = table2array(features(:, columns(i)));

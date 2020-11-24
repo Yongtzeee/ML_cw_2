@@ -97,7 +97,7 @@ if ~isempty(tree.kids)
     opText = tree.op;
     threshold = tree.threshold;
     text(tree.X, tree.Y, ['  ' opText], 'HorizontalAlignment', 'left', 'interpreter', 'none')
-    text(tree.X, tree.Y,num2str(threshold),'HorizontalAlignment', 'right', 'VerticalAlignment', 'bottom','interpreter', 'none');
+    text(tree.X, tree.Y, "<" + num2str(threshold), 'HorizontalAlignment', 'right', 'VerticalAlignment', 'bottom','interpreter', 'none');
 else
 %     opText = tree.op;
     pred = tree.prediction;

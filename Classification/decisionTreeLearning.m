@@ -1,4 +1,6 @@
-function decisionTree = decisionTreeLearning(features, labels)
+function decisionTree = decisionTreeLearning(features, labels, depth)
+
+maxDepth = 5;
 
 % initialize the tree struct at current node
 tree.op = "";
@@ -20,7 +22,11 @@ else
     if bestAttribute == -1
         tree.prediction = majorityValue(labels);
         decisionTree = tree;
+    elseif depth > maxDepth
+        tree.prediction = majorityValue(labels);
+        decisionTree = tree;
     else
+        depth = depth + 1;
         % is not leaf node
         tree.op = features.Properties.VariableNames(bestAttribute);
         tree.attribute = bestAttribute;
@@ -37,8 +43,8 @@ else
         labelsRight = labels(featureRows, :);
 
         % create children
-        leftChild = decisionTreeLearning(featuresLeft, labelsLeft);
-        rightChild = decisionTreeLearning(featuresRight, labelsRight);
+        leftChild = decisionTreeLearning(featuresLeft, labelsLeft, depth);
+        rightChild = decisionTreeLearning(featuresRight, labelsRight, depth);
 
         tree.kids = {leftChild, rightChild};
         decisionTree = tree;
