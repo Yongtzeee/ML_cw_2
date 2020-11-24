@@ -8,7 +8,12 @@ rangedCols = ["Fixed acidity" "Volatile acidity" "Citric acid" "Residual sugar" 
 maxGains = 0;
 
 % calculate mean for label (wine quality)
-A = labels(:, size(labels, 2)); % place all values in Quality in a vector
+% this is used for standard deviation reduction
+
+A = labels(:, size(labels, 2)); % get values in Quality
+B = table2array(A); % convert table to array
+calc_mean = mean(B); % calculate mean
+calc_stdev = std(B); % calculate stdev
 
 for i = 1:length(columns)
     col = table2array(features(:, columns(i)));
