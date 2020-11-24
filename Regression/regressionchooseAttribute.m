@@ -1,4 +1,4 @@
-function [bestAttribute, bestThreshold] = chooseAttribute(features, labels)
+function [bestAttribute, bestThreshold] = regressionchooseAttribute(features, labels)
     
 % calculate gain for all attributes
 lab = table2array(labels);
