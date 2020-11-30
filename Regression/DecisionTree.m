@@ -1,4 +1,4 @@
-function DecisionTree(taskType)
+% function DecisionTree(taskType)
 
 % load datasets and combine them
 red_data = readtable('winequality-red.csv', 'PreserveVariableNames', 1);
@@ -9,14 +9,18 @@ combined_data = [red_data;white_data];
 shape = size(combined_data);
 shuffled_data = combined_data(randperm(shape(1)),:);
 
-% split dataset into features and labels
-features = shuffled_data(:, 1:size(shuffled_data, 2)-1);
-labels = shuffled_data(:, size(shuffled_data, 2));
+% split dataset into train and test
+dataTrain = shuffled_data(1:3250, :); 
+dataTest = shuffled_data(3251:size(shuffled_data,1), :);
 
-% split dataset into train and test datasets
-featuresTrain = features(1:3250, :);
-featuresTest = features(3251:size(features, 1), :);
-labelsTrain = labels(1:3250, :);
-labelsTest = labels(3251:size(labels, 1), :);
+% split training and test dataset into feature and labels
+featuresTrain = dataTrain(:, 1:size(dataTrain, 2)-1);
+labelsTrain = dataTrain(:, size(dataTrain, 2));
 
-end
+featuresTest = dataTest(:, 1:size(dataTest, 2)-1);
+labelsTest = dataTest(:, size(dataTest, 2));
+
+% Building decision tree here
+
+
+% end
