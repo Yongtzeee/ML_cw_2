@@ -1,9 +1,8 @@
-function info_gain = infogain(attributes, data, attr, targetAttr):
+function info_gain = infogain(features, labels):
     freq = [];
-    subsetEntropy = 0.0;
-    i = attributes.index(attr); % get index
+    subsetEntropy = 0;
     
-    for i = 1:length(columns) % for entry in data
+    for i = 1:length(columns)
         if ismember(columns(i), rangedCols)
             freq[i] += 1;
         else
@@ -14,8 +13,8 @@ function info_gain = infogain(attributes, data, attr, targetAttr):
     for val = 1:length(freq)
         valProb        = freq[val] / sum(freq.values());
         % dataSubset     = [entry for entry in data if entry[i] == val];
-        subsetEntropy += valProb * entropy(attributes, dataSubset, targetAttr);
+        subsetEntropy += valProb * entropy(features, data, labels);
 
-    info_gain = entropy(attributes, data, targetAttr) - subsetEntropy);
+    info_gain = entropy(features, data, labels) - subsetEntropy;
     end
 end
