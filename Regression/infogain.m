@@ -11,7 +11,7 @@ function info_gain = infogain(features, labels):
     end
     
     for val = 1:length(freq)
-        valProb        = freq[val] / sum(freq.values());
+        valProb        = freq[val] / sum(freq);
         % dataSubset     = [entry for entry in data if entry[i] == val];
         subsetEntropy += valProb * entropy(features, data, labels);
 
