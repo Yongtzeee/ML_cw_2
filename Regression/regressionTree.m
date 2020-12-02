@@ -22,7 +22,7 @@ disp("------------------------------------------------------");
 disp(">>> Cross-validation results:");
 
 % conduct 10-fold cross-validation
-folds = 1;
+folds = 10;
 allRMSE = zeros([1 folds]);
 
 for fold = 1:folds
