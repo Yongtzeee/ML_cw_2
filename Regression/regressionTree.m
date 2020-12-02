@@ -10,15 +10,15 @@ dataTest = shuffled_data(floor(size(shuffled_data, 1)/5*4)+1:size(shuffled_data,
 dataShrink = dataTrain(1:500, :);
 
 % Building decision tree here
-decisionTree = regressionLearning(dataShrink, 0);
+% decisionTree = regressionLearning(dataTrain, 0);
 
-DrawDecisionTree(decisionTree)
+% DrawDecisionTree(decisionTree)
 
 % test decision tree
-rmse = evalRegression(decisionTree,dataTest);
+% rmse = evalRegression(decisionTree,dataTest);
 
-disp(">>> Decision tree results:");
-disp("RMSE: " + rmse);
+% disp(">>> Decision tree results:");
+% disp("RMSE: " + rmse);
 disp("------------------------------------------------------");
 disp(">>> Cross-validation results:");
 
@@ -39,7 +39,7 @@ for fold = 1:folds
     decTree = regressionLearning(dataFoldTrain, 0);
     
     % Check rmse of tree
-    rmse = evalRegression(decTree, featuresFoldTest, labelsFoldTest);
+    rmse = evalRegression(decTree,dataFoldTest);
     allRMSE(fold) =  sqrt(mse);
     disp("Fold " + fold);
     disp("  RMSE from CV: " + rmse);
