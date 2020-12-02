@@ -56,7 +56,6 @@ function [bestThresholdsList, bestIndex] = infoGainCalc(training)
         % Calculate SDA and SDR
         sdaResult = sda(freqDict, stdev, training);
         sdrFinal = labelsStd - sdaResult;
-        disp("SDRFINAL: "+sdrFinal)
         if sdrFinal > bestSDR
             bestSDR = sdrFinal;
             bestThreshold = threshold;

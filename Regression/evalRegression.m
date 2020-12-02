@@ -14,7 +14,6 @@ function rmse = evalRegression(tree, test_set)
     end
     
     mse = immse(labels, prediction);
-%     MSE = mean((labels - prediction).^2);
     rmse = sqrt(mse);
 end
 
@@ -27,7 +26,6 @@ function predicted = predictions(tree, test_set)
         else
             if table2array(test_set(1, tree.attribute)) == tree.threshold
                 predicted = predictions(tree.kids{1}, test_set); 
-                disp("predicted1: "+predicted)
             else
                 predicted = predictions(tree.kids{2}, test_set);
             end    
