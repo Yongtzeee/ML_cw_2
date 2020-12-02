@@ -1,6 +1,5 @@
 function regressionTree = regressionLearning(data, depth)
 % Seeking the highest SDR
-maxDepth = 5;
 
 % initialize tree struct
 tree.op = "";
@@ -12,7 +11,7 @@ tree.threshold = 0;
 [x, y] = size(data);
 current_labels = data(:,y);
 labelMat = table2array(current_labels)';
-maxDepth = 5;
+maxDepth = 3;
 
 % If all labels the same, only 1 node coz homogenous 
 if all(labelMat == labelMat(1))
@@ -71,3 +70,4 @@ labels = data{:,12};
 majority = ind - 1;
 
 end
+

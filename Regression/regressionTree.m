@@ -7,7 +7,6 @@ shuffled_data = data(randperm(shape(1)),:);
 % split dataset to train and test datasets
 dataTrain = shuffled_data(1:floor(size(shuffled_data, 1)/5*4), :);
 dataTest = shuffled_data(floor(size(shuffled_data, 1)/5*4)+1:size(shuffled_data, 1), :);
-dataShrink = dataTrain(1:500, :);
 
 % Building decision tree here
 % decisionTree = regressionLearning(dataTrain, 0);
@@ -37,13 +36,14 @@ for fold = 1:folds
     
     % Learning on fold data
     decTree = regressionLearning(dataFoldTrain, 0);
+    DrawDecisionTree(decTree, "Regression Tree - Fold " + fold);
+    disp(decTree);
     
     % Check rmse of tree
     rmse = evalRegression(decTree,dataFoldTest);
-    allRMSE(fold) =  sqrt(mse);
+    allRMSE(fold) =  sqrt(rmse);
     disp("Fold " + fold);
     disp("  RMSE from CV: " + rmse);
-    DrawDecisionTree(decTree, "Regression Tree - Fold " + fold);
     
 end
 
