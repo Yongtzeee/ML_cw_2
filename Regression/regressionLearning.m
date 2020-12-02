@@ -26,31 +26,31 @@ if all(labelMat == labelMat(1))
     regressionTree = tree;
     
 else
-    [bestThreshold, bestAttribute] = infoGainCalc(data);
+    [bestThresholdsList, bestIndex] = infoGainCalc(data);
 %     for i = i:length(features)
 %         [bestThreshold, bestAttribute] = infoGainCalc();
 
-    disp("Best threshold is: " + bestThreshold)
+    disp("Best attribute is attribute: " + bestIndex)
 
-    % if bestAttribute = -1 then choose majority value of labels as leaf node
+    % if max depth is exceeded, choose labels as leaf node
     % else do below
-    if bestAttribute == -1
-        tree.prediction = majorityValue(labels);
+    if depth == 6
+        tree.prediction = labelMat(:, size(data,2));
         regressionTree = tree;
-    elseif depth > maxDepth
-        tree.prediction = majorityValue(labels);
-        regressionTree = tree;
+%     elseif depth > maxDepth
+%         tree.prediction = majorityValue(labels);
+%         regressionTree = tree;
     else
         depth = depth + 1;
         disp("Current depth: " + depth)
         % is not leaf node
-        tree.op = data.Properties.VariableNames(bestAttribute);
-        tree.attribute = bestAttribute;
+        tree.op = data.Properties.VariableNames(bestIndex);
+        tree.attribute = bestIndex;
         tree.threshold = bestThreshold;
 
         % retrieve datapoints that have bestAttribute < bestThreshold     
         
-        dataRows = table2array(data(:, bestAttribute)) < bestThreshold;
+        dataRows = table2array(data(:, bestIndex)) < bestThreshold;
         dataLeft = data(dataRows, :);
         
 %         featureRows = table2array(data(:, bestAttribute)) < bestThreshold;
