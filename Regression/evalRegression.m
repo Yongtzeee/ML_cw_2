@@ -2,7 +2,7 @@ function rmse = evalRegression(tree, test_set)
     [x,y] = size(test_set);
     labels = test_set{:, y};
     labels = labels.';
-    prediction = []
+    prediction = [];
     
     if isempty(tree.kids)
        prediction = tree.prediction;    
