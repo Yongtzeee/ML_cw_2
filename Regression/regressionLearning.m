@@ -1,9 +1,5 @@
-function regressionTree = regressionLearning(data, depth)
-
-% function regressionTree = regressionLearning(features, labels, depth)
-% features = data(:, 1:size(data, 2)-1);
-% labels = data(:, size(data, 2));
-
+function regressionTree = regressionLearningTest(data, depth)
+% Seeking the highest SDR
 maxDepth = 5;
 
 % initialize tree struct
@@ -13,48 +9,54 @@ tree.prediction = -1;
 tree.attribute = -1;
 tree.threshold = 0;
 
-labelMat = table2array(data(:,size(data, 2))); % extract labels
-disp("Label mat size: "+size(labelMat))
+[x, y] = size(data);
+current_labels = data(:,y);
+labelMat = table2array(current_labels)';
+maxDepth = 5;
 
-if all(labelMat == labelMat(1)) % if all labels are the same, return as leaf
+% If all labels the same, only 1 node coz homogenous 
+if all(labelMat == labelMat(1))
     tree.prediction = labelMat(1);
     regressionTree = tree;
+
+else
+    %Find the best threshold of the current data
+    [bestThresholdList, bestAttribute] = infoGainCalc(data);
+    bestThreshold = bestThresholdList(bestAttribute);
     
-else % different labels
-    [bestThresholdsList, bestIndex] = infoGainCalc(data);
-    disp("Best attribute is attribute: " + bestIndex);
-    bestThreshold = bestThresholdsList(bestIndex);
+    % if sdr negative already
+    if bestAttribute == -1
+       tree.prediction = majorityValue(data);
+       regressionTree = tree;
 
-    if depth > maxDepth
-        % if leaf node
-        tree.prediction = labelMat(:, size(data,2));
-        regressionTree = tree;
+    % if reach max depth
+    elseif depth > maxDepth
+       tree.prediction = majorityValue(data);
+       regressionTree = tree;
+       
+   % recurse
     else
+        disp("Depth is: "+depth)
         depth = depth + 1;
-        disp("Current depth: " + depth)
-        % is not leaf node
-        tree.op = data.Properties.VariableNames(bestIndex);
-        tree.attribute = bestIndex;
+        tree.op = data.Properties.VariableNames(bestAttribute);
+        tree.attribute = bestAttribute;
         tree.threshold = bestThreshold;
-
-        % retrieve datapoints that have bestAttribute < bestThreshold
-        dataRows = table2array(data(:, bestIndex)) < bestThreshold;
-        dataLeft = data(dataRows, :);
-
-        % retrieve datapoints that have bestAttribute >= bestThreshold
-        dataRows = table2array(data(:, bestIndex)) >= bestThreshold;
-        dataRight = data(dataRows, :);
-
+        
+        % find points that are equal to the threshold
+        dataRows = table2array(data(:, bestAttribute)) == bestThreshold;
+        dataLeft = data(dataRows,:);
+        
+        % find points that are not equal to threshold
+        dataRows = ~dataRows;
+        dataRight =data(dataRows,:);
+        
         % create children
-        leftChild = regressionLearning(dataLeft, depth);
-        rightChild = regressionLearning(dataRight, depth);
-
-%         leftChild = regressionLearning(featuresLeft, labelsLeft, depth);
-%         rightChild = regressionLearning(featuresRight, labelsRight, depth);
+        leftChild = regressionLearningTest(dataLeft, depth);
+        rightChild = regressionLearningTest(dataRight, depth);
 
         tree.kids = {leftChild, rightChild};
         regressionTree = tree;
+ 
     end
-end
 
 end
