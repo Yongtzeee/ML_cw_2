@@ -1,4 +1,4 @@
-function [bestThreshold, bestSDR] = infoGainCalc(data)
+function [bestThreshold, bestIndex] = infoGainCalc(data)
 
     % Using a method like a dictionary in python to get counts for all
     % unique values, then calcualte their stddev
@@ -18,7 +18,7 @@ function [bestThreshold, bestSDR] = infoGainCalc(data)
         sdrFinal = 0;
         disp("Currently on feature: "+feature)
         featureCol = table2array(data(:, columns(feature)));
-        uniqueValues = unique(featureCol); %unique values of the particular col  
+        uniqueValues = unique(featureCol); %unique values of the particular feature 
         uniqueValuesSize = size(uniqueValues);
         freqDict = zeros(uniqueValuesSize(1),2);
         freqDict(:,1) = uniqueValues; % Assign keys to freqDict
@@ -26,7 +26,7 @@ function [bestThreshold, bestSDR] = infoGainCalc(data)
         labelStore = []; 
         
         for row = 1:dataShape(1) %Loop through rows of table data to do counting
-%             disp("Row: "+row)
+            disp("Row: "+row)
             for uniqueVal = 1:length(uniqueValues)
                if data{row,feature} == uniqueValues(uniqueVal,1)
                    freqDict(uniqueVal, 2) = freqDict(uniqueVal,2) + 1; % Increment count if found same one
@@ -50,13 +50,18 @@ function [bestThreshold, bestSDR] = infoGainCalc(data)
     [bestSDR, bestIndex] = max(sdrList);
     bestThreshold = thresholdList(bestIndex);
     
+    if bestSDR < 0
+        bestThreshold = -Inf;
+        bestIndex = -1;
+    end
+    
 end
 
 function sdaResult = sda(freqDict,datasetSD,data)
     sdaResult = 0;
     [m,n] = size(data);
     [a,b] = size(freqDict);
-   
+    
     for i = 1:a
         sdaResult = sdaResult + freqDict(i,2)/m * datasetSD(i);
     end
