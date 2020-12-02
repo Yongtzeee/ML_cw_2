@@ -21,7 +21,7 @@ function [bestThresholdsList, bestIndex] = infoGainCalc(training)
     bestFeature = 0;
     
     for feature = 1:length(columns)-1 %Loop through all our features first except the label in last col 
-        disp("NOW ON FEATURE "+feature)
+        disp("FEATURE "+feature)
         sdrFinal = 0;
         sdaResult = 0;
         stdev = [];

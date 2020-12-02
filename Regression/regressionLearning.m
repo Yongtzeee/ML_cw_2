@@ -12,7 +12,7 @@ tree.threshold = 0;
 [x, y] = size(data);
 current_labels = data(:,y);
 labelMat = table2array(current_labels)';
-maxDepth = 2;
+maxDepth = 5;
 
 % If all labels the same, only 1 node coz homogenous 
 if all(labelMat == labelMat(1))
