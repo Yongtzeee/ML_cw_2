@@ -37,13 +37,12 @@ function [bestThreshold, bestSDR] = infoGainCalc(data)
         end
         
         stdev = std(labelStore, "omitNan");
-        disp(stdev)
         [min_stdev, index] = min(stdev);
         threshold = freqDict(index,1);
         thresholdList(feature) = threshold;
         
         % Calculate SDA and SDR
-        sdrFinal = datasetStdev - sda(freqDict, datasetStdev, data);
+        sdrFinal = datasetStdev - sda(freqDict, stdev, data);
         sdrList(feature) = sdrFinal;   
     end
 
@@ -57,9 +56,7 @@ function sdaResult = sda(freqDict,datasetSD,data)
     sdaResult = 0;
     [m,n] = size(data);
     [a,b] = size(freqDict);
-    disp("SIZE IS "+ size(freqDict))
-    
-    
+   
     for i = 1:a
         sdaResult = sdaResult + freqDict(i,2)/m * datasetSD(i);
     end
