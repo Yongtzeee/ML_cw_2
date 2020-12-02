@@ -1,16 +1,38 @@
-function mse = evalRegression(tree, features, labels)
-
-% Returns the MSE of the tree
-
-labs = table2array(labels);
-[rows, cols] = size(features);
-preds = zeros([1 rows]);
-
-for i = 1:rows
-    preds(i) = goDownTree(tree, features(i,:));
+function rmse = evalRegression(tree, test_set)
+    [x,y] = size(test_set);
+    labels = test_set{:, y};
+    labels = labels.';
+    prediction = []
+    
+    if isempty(tree.kids)
+       prediction = tree.prediction;    
+       return     
+    end
+    
+    for i = 1:x
+        prediction(i) = predictions(tree, test_set);
+    end
+    
+    mse = immse(labels, prediction);
+%     MSE = mean((labels - prediction).^2);
+    rmse = sqrt(mse);
 end
 
-% Should be the MSE of predictions against labels
-mse = immse(preds, labels);
-
+function predicted = predictions(tree, test_set)
+    if isempty(tree.op)
+        predicted = tree.prediction;
+    else
+        if tree.attribute < 0
+            predicted = tree.prediction;
+        else
+            if table2array(test_set(1, tree.attribute)) == tree.threshold
+                predicted = predictions(tree.kids{1}, test_set); 
+                disp("predicted1: "+predicted)
+            else
+                predicted = predictions(tree.kids{2}, test_set);
+            end    
+        end
+        
+    end
 end
+
