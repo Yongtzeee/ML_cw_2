@@ -22,7 +22,8 @@ if all(labelMat == labelMat(1)) % if all labels are the same, return as leaf
     
 else % different labels
     [bestThresholdsList, bestIndex] = infoGainCalc(data);
-    disp("Best attribute is attribute: " + bestIndex)
+    disp("Best attribute is attribute: " + bestIndex);
+    bestThreshold = bestThresholdsList(bestIndex);
 
     if depth > maxDepth
         % if leaf node
@@ -34,14 +35,14 @@ else % different labels
         % is not leaf node
         tree.op = data.Properties.VariableNames(bestIndex);
         tree.attribute = bestIndex;
-        tree.threshold = bestThresholdsList;
+        tree.threshold = bestThreshold;
 
-        % retrieve datapoints that have bestAttribute < bestThreshold     
-        dataRows = table2array(data(:, bestIndex)) < bestThresholdsList;
+        % retrieve datapoints that have bestAttribute < bestThreshold
+        dataRows = table2array(data(:, bestIndex)) < bestThreshold;
         dataLeft = data(dataRows, :);
 
         % retrieve datapoints that have bestAttribute >= bestThreshold
-        dataRows = table2array(data(:, bestIndex)) >= bestThresholdsList;
+        dataRows = table2array(data(:, bestIndex)) >= bestThreshold;
         dataRight = data(dataRows, :);
 
         % create children
