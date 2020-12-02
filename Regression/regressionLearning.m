@@ -13,21 +13,21 @@ tree.prediction = -1;
 tree.attribute = -1;
 tree.threshold = 0;
 
-labelMat = table2array(data(:,size(data, 2))); % extract labels
-disp("Label mat size: "+size(labelMat))
+%labelMat = table2array(data(:,size(data, 2))); % extract labels
+%disp("Label mat size: "+size(labelMat))
 
-if all(labelMat == labelMat(1)) % if all labels are the same, return as leaf
-    tree.prediction = labelMat(1);
-    regressionTree = tree;
-    
-else % different labels
+% if all(labelMat == labelMat(1)) % if all labels are the same, return as leaf
+%     tree.prediction = labelMat(1);
+%     regressionTree = tree;
+%     
+% else
     [bestThresholdsList, bestIndex] = infoGainCalc(data);
     disp("Best attribute is attribute: " + bestIndex);
     bestThreshold = bestThresholdsList(bestIndex);
 
     if depth > maxDepth
         % if leaf node
-        tree.prediction = labelMat(:, size(data,2));
+        tree.prediction = data(:, size(data,2));
         regressionTree = tree;
     else
         depth = depth + 1;
@@ -57,4 +57,4 @@ else % different labels
     end
 end
 
-end
+%end
