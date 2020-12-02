@@ -1,4 +1,4 @@
-function [bestThresholdsList, freqDict, labelStore] = infoGainCalc(training)
+function [bestThresholdsList, bestIndex] = infoGainCalc(training)
     % Returns an array of bestThresholds of all features, 
     % shape -> [1x11]
 
@@ -9,7 +9,7 @@ function [bestThresholdsList, freqDict, labelStore] = infoGainCalc(training)
     % Shape of our data, rows x columns
     [m, n]= size(training);
     
-    % freqDict will look like {key:count} 
+    % freqDict will look like {key:count...} 
     sdrList = [];
     thresholdList = [];
     bestThresholdsList = [];
@@ -56,7 +56,7 @@ function [bestThresholdsList, freqDict, labelStore] = infoGainCalc(training)
         % Calculate SDA and SDR
         sdaResult = sda(freqDict, stdev, training);
         sdrFinal = labelsStd - sdaResult;
-        
+        disp("SDRFINAL: "+sdrFinal)
         if sdrFinal > bestSDR
             bestSDR = sdrFinal;
             bestThreshold = threshold;
